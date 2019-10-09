@@ -3,7 +3,6 @@ numpy
 statsmodels
 scipy
 matplotlib
-math
 seaborn
 sklearn
 collections
