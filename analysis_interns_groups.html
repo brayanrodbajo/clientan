@@ -15929,6 +15929,585 @@ Kappa:  0.33918355473674
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5-comp-groups-combinations">5-comp groups combinations<a class="anchor-link" href="#5-comp-groups-combinations">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Latex</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">three_combs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">companies</span><span class="p">)),</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="n">three_combs</span><span class="p">:</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;## &#39;</span>
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">title</span><span class="o">+=</span><span class="n">companies</span><span class="p">[</span><span class="n">no</span><span class="p">]</span>
+        <span class="n">title</span><span class="o">+=</span><span class="s1">&#39; y &#39;</span>
+    <span class="n">title</span><span class="o">+=</span><span class="n">companies</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">df_n_ps_std_mfcc</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">df_n_ps</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;chosen&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">X</span><span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_n_ps_std_mfcc</span><span class="p">[</span><span class="n">no</span><span class="p">])</span>
+        <span class="n">y</span><span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_n_ps</span><span class="p">[</span><span class="n">no</span><span class="p">][</span><span class="s1">&#39;chosen&#39;</span><span class="p">])</span>
+    
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">mlp</span> <span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+
+    <span class="n">activation_vec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="s1">&#39;tanh&#39;</span><span class="p">]</span>
+    <span class="n">max_iter_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]</span>
+    <span class="n">hidden_layer_sizes_vec</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">10</span><span class="p">,),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> 
+                              <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+    <span class="n">learning_rate_init_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.003</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">,</span> <span class="mf">0.006</span><span class="p">,</span> <span class="mf">0.007</span><span class="p">,</span> <span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.009</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">]</span>
+    <span class="n">batch_size_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+    <span class="n">parametros</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="n">activation_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span><span class="n">max_iter_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">:</span> <span class="n">hidden_layer_sizes_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;learning_rate_init&#39;</span><span class="p">:</span> <span class="n">learning_rate_init_vec</span><span class="c1">#,</span>
+                  <span class="c1">#&#39;batch_size&#39;: batch_size_vec</span>
+                  <span class="p">}</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa&#39;</span><span class="p">:</span><span class="n">make_scorer</span><span class="p">(</span><span class="n">cohen_kappa_score</span><span class="p">),</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span><span class="s1">&#39;accuracy&#39;</span><span class="p">}</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">parametros</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">iid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Los parámetros del mejor modelo fueron </span><span class="si">{0}</span><span class="s2">, que permiten obtener un Accuracy de </span><span class="si">{1:.2f}</span><span class="s2">% y un Kappa del </span><span class="si">{2:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_score_</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;mean_test_kappa&#39;</span><span class="p">][</span><span class="n">grid</span><span class="o">.</span><span class="n">best_index_</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+
+    <span class="n">n0</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">### hidden_layer_sizes</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">])):</span>
+        <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;learning_rate_init&#39;</span><span class="p">]</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span>
+
+    <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">n0</span><span class="p">,))</span>
+    <span class="n">hidden_outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_tensor</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;logistic&#39;</span><span class="p">:</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">hidden_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">])(</span><span class="n">hidden_outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">classification_output</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">hidden_outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="n">input_tensor</span><span class="p">],</span> <span class="p">[</span><span class="n">classification_output</span><span class="p">])</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">adam</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">adam</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span>
+                        <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+             <span class="p">)</span>
+
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+    <span class="n">val_acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">]</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+    <span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span>
+
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;epochs: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">)))</span>
+
+    <span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test loss: </span><span class="si">{}</span><span class="s2">, test accuracy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span><span class="p">))</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;AUC ROC: &quot;</span><span class="p">,</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">y_pred</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kappa: &quot;</span><span class="p">,</span><span class="n">cohen_kappa_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Specialized<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   mfccfiles_1  mfccfiles_2  mfccfiles_3  mfccfiles_4  mfccfiles_5  \
+0     0.297583     1.225637    -0.367641     0.606499     0.072373   
+1     0.637676    -1.507256    -1.572737    -0.954161    -0.857425   
+2     2.236730    -0.319414     0.669910    -1.918119    -0.820882   
+3     0.662077    -0.381499     0.111981    -1.743808    -1.317593   
+4     0.736502     0.112932    -0.065024    -1.049458    -0.408043   
+
+   mfccfiles_6  mfccfiles_7  mfccfiles_8  mfccfiles_9  mfccfiles_10  \
+0    -2.029620     0.791469     0.752018     2.268802     -1.383289   
+1     0.327005     0.816764     0.214245     0.241703      0.637066   
+2    -2.379333    -1.570021    -2.755344    -2.150610     -2.528577   
+3    -1.348534    -0.627198    -1.629882    -2.075974     -1.248765   
+4    -0.437499     0.090831    -0.852983    -1.922491     -0.284365   
+
+   mfccfiles_11  mfccfiles_12  mfccfiles_13  
+0      0.548279      1.903211     -1.011470  
+1      1.601538      0.300317     -0.466779  
+2     -0.877081     -0.522248     -1.429911  
+3     -1.126014     -1.316359     -1.126174  
+4      0.210624     -0.032122     -0.700183  
+(1149, 13)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (30, 20, 10), &#39;learning_rate_init&#39;: 0.003, &#39;max_iter&#39;: 300}, que permiten obtener un Accuracy de 68.76% y un Kappa del 29.93
+Model: &#34;model_118&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_118 (InputLayer)       (None, 13)                0         
+_________________________________________________________________
+dense_354 (Dense)            (None, 30)                420       
+_________________________________________________________________
+dense_355 (Dense)            (None, 20)                620       
+_________________________________________________________________
+dense_356 (Dense)            (None, 10)                210       
+_________________________________________________________________
+dense_357 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 1,261
+Trainable params: 1,261
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 300
+288/288 [==============================] - 0s 193us/step
+test loss: 0.7107465730773078, test accuracy: 0.6319444179534912
+AUC ROC:  0.5935739387516037
+Kappa:  0.11178353215013093
+[[151  46]
+ [ 60  31]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   mfccfiles_1  mfccfiles_2  mfccfiles_3  mfccfiles_4  mfccfiles_5  \
+0     0.297583     1.225637    -0.367641     0.606499     0.072373   
+1     0.637676    -1.507256    -1.572737    -0.954161    -0.857425   
+2     2.236730    -0.319414     0.669910    -1.918119    -0.820882   
+3     0.662077    -0.381499     0.111981    -1.743808    -1.317593   
+4     0.736502     0.112932    -0.065024    -1.049458    -0.408043   
+
+   mfccfiles_6  mfccfiles_7  mfccfiles_8  mfccfiles_9  mfccfiles_10  \
+0    -2.029620     0.791469     0.752018     2.268802     -1.383289   
+1     0.327005     0.816764     0.214245     0.241703      0.637066   
+2    -2.379333    -1.570021    -2.755344    -2.150610     -2.528577   
+3    -1.348534    -0.627198    -1.629882    -2.075974     -1.248765   
+4    -0.437499     0.090831    -0.852983    -1.922491     -0.284365   
+
+   mfccfiles_11  mfccfiles_12  mfccfiles_13  
+0      0.548279      1.903211     -1.011470  
+1      1.601538      0.300317     -0.466779  
+2     -0.877081     -0.522248     -1.429911  
+3     -1.126014     -1.316359     -1.126174  
+4      0.210624     -0.032122     -0.700183  
+(1146, 13)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (100) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (30,), &#39;learning_rate_init&#39;: 0.003, &#39;max_iter&#39;: 100}, que permiten obtener un Accuracy de 69.85% y un Kappa del 14.32
+Model: &#34;model_119&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_119 (InputLayer)       (None, 13)                0         
+_________________________________________________________________
+dense_358 (Dense)            (None, 30)                420       
+_________________________________________________________________
+dense_359 (Dense)            (None, 1)                 31        
+=================================================================
+Total params: 451
+Trainable params: 451
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 100
+287/287 [==============================] - 0s 43us/step
+test loss: 0.6095467818323328, test accuracy: 0.693379819393158
+AUC ROC:  0.5735984048791931
+Kappa:  0.07153885743695321
+[[188  15]
+ [ 73  11]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   mfccfiles_1  mfccfiles_2  mfccfiles_3  mfccfiles_4  mfccfiles_5  \
+0     0.297583     1.225637    -0.367641     0.606499     0.072373   
+1     0.637676    -1.507256    -1.572737    -0.954161    -0.857425   
+2     2.236730    -0.319414     0.669910    -1.918119    -0.820882   
+3     0.662077    -0.381499     0.111981    -1.743808    -1.317593   
+4     0.736502     0.112932    -0.065024    -1.049458    -0.408043   
+
+   mfccfiles_6  mfccfiles_7  mfccfiles_8  mfccfiles_9  mfccfiles_10  \
+0    -2.029620     0.791469     0.752018     2.268802     -1.383289   
+1     0.327005     0.816764     0.214245     0.241703      0.637066   
+2    -2.379333    -1.570021    -2.755344    -2.150610     -2.528577   
+3    -1.348534    -0.627198    -1.629882    -2.075974     -1.248765   
+4    -0.437499     0.090831    -0.852983    -1.922491     -0.284365   
+
+   mfccfiles_11  mfccfiles_12  mfccfiles_13  
+0      0.548279      1.903211     -1.011470  
+1      1.601538      0.300317     -0.466779  
+2     -0.877081     -0.522248     -1.429911  
+3     -1.126014     -1.316359     -1.126174  
+4      0.210624     -0.032122     -0.700183  
+(1221, 13)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (50) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (10,), &#39;learning_rate_init&#39;: 0.005, &#39;max_iter&#39;: 50}, que permiten obtener un Accuracy de 69.95% y un Kappa del 14.91
+Model: &#34;model_120&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_120 (InputLayer)       (None, 13)                0         
+_________________________________________________________________
+dense_360 (Dense)            (None, 10)                140       
+_________________________________________________________________
+dense_361 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 151
+Trainable params: 151
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 50
+306/306 [==============================] - 0s 20us/step
+test loss: 0.6717599630355835, test accuracy: 0.6339869499206543
+AUC ROC:  0.545661994132166
+Kappa:  0.04080604534005028
+[[182  15]
+ [ 97  12]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   mfccfiles_1  mfccfiles_2  mfccfiles_3  mfccfiles_4  mfccfiles_5  \
+0     0.297583     1.225637    -0.367641     0.606499     0.072373   
+1     0.637676    -1.507256    -1.572737    -0.954161    -0.857425   
+2     2.236730    -0.319414     0.669910    -1.918119    -0.820882   
+3     0.662077    -0.381499     0.111981    -1.743808    -1.317593   
+4     0.736502     0.112932    -0.065024    -1.049458    -0.408043   
+
+   mfccfiles_6  mfccfiles_7  mfccfiles_8  mfccfiles_9  mfccfiles_10  \
+0    -2.029620     0.791469     0.752018     2.268802     -1.383289   
+1     0.327005     0.816764     0.214245     0.241703      0.637066   
+2    -2.379333    -1.570021    -2.755344    -2.150610     -2.528577   
+3    -1.348534    -0.627198    -1.629882    -2.075974     -1.248765   
+4    -0.437499     0.090831    -0.852983    -1.922491     -0.284365   
+
+   mfccfiles_11  mfccfiles_12  mfccfiles_13  
+0      0.548279      1.903211     -1.011470  
+1      1.601538      0.300317     -0.466779  
+2     -0.877081     -0.522248     -1.429911  
+3     -1.126014     -1.316359     -1.126174  
+4      0.210624     -0.032122     -0.700183  
+(1149, 13)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (20, 20, 20), &#39;learning_rate_init&#39;: 0.009, &#39;max_iter&#39;: 100}, que permiten obtener un Accuracy de 65.74% y un Kappa del 24.58
+Model: &#34;model_121&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_121 (InputLayer)       (None, 13)                0         
+_________________________________________________________________
+dense_362 (Dense)            (None, 20)                280       
+_________________________________________________________________
+dense_363 (Dense)            (None, 20)                420       
+_________________________________________________________________
+dense_364 (Dense)            (None, 20)                420       
+_________________________________________________________________
+dense_365 (Dense)            (None, 1)                 21        
+=================================================================
+Total params: 1,141
+Trainable params: 1,141
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 100
+288/288 [==============================] - 0s 67us/step
+test loss: 1.5485331747266982, test accuracy: 0.6458333134651184
+AUC ROC:  0.6237143696738172
+Kappa:  0.17801779618333424
+[[147  58]
+ [ 44  39]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Gramma y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   mfccfiles_1  mfccfiles_2  mfccfiles_3  mfccfiles_4  mfccfiles_5  \
+0     0.297583     1.225637    -0.367641     0.606499     0.072373   
+1     0.637676    -1.507256    -1.572737    -0.954161    -0.857425   
+2     2.236730    -0.319414     0.669910    -1.918119    -0.820882   
+3     0.662077    -0.381499     0.111981    -1.743808    -1.317593   
+4     0.736502     0.112932    -0.065024    -1.049458    -0.408043   
+
+   mfccfiles_6  mfccfiles_7  mfccfiles_8  mfccfiles_9  mfccfiles_10  \
+0    -2.029620     0.791469     0.752018     2.268802     -1.383289   
+1     0.327005     0.816764     0.214245     0.241703      0.637066   
+2    -2.379333    -1.570021    -2.755344    -2.150610     -2.528577   
+3    -1.348534    -0.627198    -1.629882    -2.075974     -1.248765   
+4    -0.437499     0.090831    -0.852983    -1.922491     -0.284365   
+
+   mfccfiles_11  mfccfiles_12  mfccfiles_13  
+0      0.548279      1.903211     -1.011470  
+1      1.601538      0.300317     -0.466779  
+2     -0.877081     -0.522248     -1.429911  
+3     -1.126014     -1.316359     -1.126174  
+4      0.210624     -0.032122     -0.700183  
+(1110, 13)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;logistic&#39;, &#39;hidden_layer_sizes&#39;: (30, 30), &#39;learning_rate_init&#39;: 0.004, &#39;max_iter&#39;: 200}, que permiten obtener un Accuracy de 65.87% y un Kappa del 4.22
+Model: &#34;model_122&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_122 (InputLayer)       (None, 13)                0         
+_________________________________________________________________
+dense_366 (Dense)            (None, 30)                420       
+_________________________________________________________________
+dense_367 (Dense)            (None, 30)                930       
+_________________________________________________________________
+dense_368 (Dense)            (None, 1)                 31        
+=================================================================
+Total params: 1,381
+Trainable params: 1,381
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 200
+278/278 [==============================] - 0s 79us/step
+test loss: 0.6395446550931861, test accuracy: 0.6582733988761902
+AUC ROC:  0.5623238423928674
+Kappa:  0.025964446411448128
+[[179   4]
+ [ 91   4]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   mfccfiles_1  mfccfiles_2  mfccfiles_3  mfccfiles_4  mfccfiles_5  \
+0    -0.339415     0.847773     0.497198    -0.389310     1.225458   
+1     0.587658    -1.195426     0.636375     0.199876     0.765321   
+2     1.465595    -2.307943     0.354567    -0.058273    -1.298853   
+3     0.749403    -1.690498    -0.125200    -1.016135     0.825845   
+4    -0.280577     0.393332     0.744917     2.411400    -0.777421   
+
+   mfccfiles_6  mfccfiles_7  mfccfiles_8  mfccfiles_9  mfccfiles_10  \
+0     1.947033    -0.736267     0.492219     0.576682      1.504697   
+1     0.061181     0.379367    -0.440867     0.232893      1.339920   
+2    -0.811453    -1.551580    -3.934320    -1.079432      2.546130   
+3     0.271444    -0.104786    -0.992141     0.049182      1.425948   
+4    -0.420018     1.258355    -1.544565    -0.498071      0.421527   
+
+   mfccfiles_11  mfccfiles_12  mfccfiles_13  
+0     -1.796460      0.724954      0.958600  
+1      0.110001      0.807525      0.815678  
+2      1.421407      0.639359      0.199094  
+3     -0.343269     -0.789558     -0.411898  
+4     -0.632908     -0.056846     -0.072348  
+(1050, 13)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (30, 30, 30), &#39;learning_rate_init&#39;: 0.008, &#39;max_iter&#39;: 2000}, que permiten obtener un Accuracy de 68.61% y un Kappa del 24.39
+Model: &#34;model_123&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_123 (InputLayer)       (None, 13)                0         
+_________________________________________________________________
+dense_369 (Dense)            (None, 30)                420       
+_________________________________________________________________
+dense_370 (Dense)            (None, 30)                930       
+_________________________________________________________________
+dense_371 (Dense)            (None, 30)                930       
+_________________________________________________________________
+dense_372 (Dense)            (None, 1)                 31        
+=================================================================
+Total params: 2,311
+Trainable params: 2,311
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 2000
+263/263 [==============================] - 0s 72us/step
+test loss: 3.171573793026884, test accuracy: 0.5969581604003906
+AUC ROC:  0.593746118494597
+Kappa:  0.1075613035405597
+[[120  46]
+ [ 60  37]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Tonal-Centroid">Tonal Centroid<a class="anchor-link" href="#Tonal-Centroid">&#182;</a></h1>
 </div>
 </div>
@@ -18894,6 +19473,577 @@ AUC ROC:  0.6517647058823529
 Kappa:  0.1960396039603961
 [[59 26]
  [30 30]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5-comp-groups-combinations">5-comp groups combinations<a class="anchor-link" href="#5-comp-groups-combinations">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Latex</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">three_combs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">companies</span><span class="p">)),</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="n">three_combs</span><span class="p">:</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;## &#39;</span>
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">title</span><span class="o">+=</span><span class="n">companies</span><span class="p">[</span><span class="n">no</span><span class="p">]</span>
+        <span class="n">title</span><span class="o">+=</span><span class="s1">&#39; y &#39;</span>
+    <span class="n">title</span><span class="o">+=</span><span class="n">companies</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">df_n_ps_std_tc</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">df_n_ps</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;chosen&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">X</span><span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_n_ps_std_tc</span><span class="p">[</span><span class="n">no</span><span class="p">])</span>
+        <span class="n">y</span><span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_n_ps</span><span class="p">[</span><span class="n">no</span><span class="p">][</span><span class="s1">&#39;chosen&#39;</span><span class="p">])</span>
+    
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">mlp</span> <span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+
+    <span class="n">activation_vec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="s1">&#39;tanh&#39;</span><span class="p">]</span>
+    <span class="n">max_iter_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]</span>
+    <span class="n">hidden_layer_sizes_vec</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">10</span><span class="p">,),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> 
+                              <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+    <span class="n">learning_rate_init_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.003</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">,</span> <span class="mf">0.006</span><span class="p">,</span> <span class="mf">0.007</span><span class="p">,</span> <span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.009</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">]</span>
+    <span class="n">batch_size_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+    <span class="n">parametros</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="n">activation_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span><span class="n">max_iter_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">:</span> <span class="n">hidden_layer_sizes_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;learning_rate_init&#39;</span><span class="p">:</span> <span class="n">learning_rate_init_vec</span><span class="c1">#,</span>
+                  <span class="c1">#&#39;batch_size&#39;: batch_size_vec</span>
+                  <span class="p">}</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa&#39;</span><span class="p">:</span><span class="n">make_scorer</span><span class="p">(</span><span class="n">cohen_kappa_score</span><span class="p">),</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span><span class="s1">&#39;accuracy&#39;</span><span class="p">}</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">parametros</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">iid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Los parámetros del mejor modelo fueron </span><span class="si">{0}</span><span class="s2">, que permiten obtener un Accuracy de </span><span class="si">{1:.2f}</span><span class="s2">% y un Kappa del </span><span class="si">{2:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_score_</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;mean_test_kappa&#39;</span><span class="p">][</span><span class="n">grid</span><span class="o">.</span><span class="n">best_index_</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+
+    <span class="n">n0</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">### hidden_layer_sizes</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">])):</span>
+        <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;learning_rate_init&#39;</span><span class="p">]</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span>
+
+    <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">n0</span><span class="p">,))</span>
+    <span class="n">hidden_outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_tensor</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;logistic&#39;</span><span class="p">:</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">hidden_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">])(</span><span class="n">hidden_outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">classification_output</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">hidden_outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="n">input_tensor</span><span class="p">],</span> <span class="p">[</span><span class="n">classification_output</span><span class="p">])</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">adam</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">adam</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span>
+                        <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+             <span class="p">)</span>
+
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+    <span class="n">val_acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">]</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+    <span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span>
+
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;epochs: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">)))</span>
+
+    <span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test loss: </span><span class="si">{}</span><span class="s2">, test accuracy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span><span class="p">))</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;AUC ROC: &quot;</span><span class="p">,</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">y_pred</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kappa: &quot;</span><span class="p">,</span><span class="n">cohen_kappa_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Specialized<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   tonalcentroidfiles_1  tonalcentroidfiles_2  tonalcentroidfiles_3  \
+0              1.585484              0.923309             -0.748807   
+1              1.129768              0.963814              0.209096   
+2             -0.066076              1.857866              1.921193   
+3              0.119831              1.429286              1.472808   
+4             -0.123292              0.197415              0.503797   
+
+   tonalcentroidfiles_4  tonalcentroidfiles_5  tonalcentroidfiles_6  
+0              1.209820             -1.073924              0.283035  
+1             -0.143471              0.115184              0.020905  
+2              1.093619              2.089353              1.984310  
+3              1.282029              1.096897              2.122871  
+4              1.431215              1.715761              0.683611  
+(1149, 6)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (10) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (10, 10), &#39;learning_rate_init&#39;: 0.02, &#39;max_iter&#39;: 10}, que permiten obtener un Accuracy de 67.25% y un Kappa del 3.61
+Model: &#34;model_112&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_112 (InputLayer)       (None, 6)                 0         
+_________________________________________________________________
+dense_340 (Dense)            (None, 10)                70        
+_________________________________________________________________
+dense_341 (Dense)            (None, 10)                110       
+_________________________________________________________________
+dense_342 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 191
+Trainable params: 191
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 10
+288/288 [==============================] - 0s 59us/step
+test loss: 0.6484600371784635, test accuracy: 0.6666666865348816
+AUC ROC:  0.5241138560687433
+Kappa:  0.026753027316248956
+[[190   0]
+ [ 96   2]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   tonalcentroidfiles_1  tonalcentroidfiles_2  tonalcentroidfiles_3  \
+0              1.585484              0.923309             -0.748807   
+1              1.129768              0.963814              0.209096   
+2             -0.066076              1.857866              1.921193   
+3              0.119831              1.429286              1.472808   
+4             -0.123292              0.197415              0.503797   
+
+   tonalcentroidfiles_4  tonalcentroidfiles_5  tonalcentroidfiles_6  
+0              1.209820             -1.073924              0.283035  
+1             -0.143471              0.115184              0.020905  
+2              1.093619              2.089353              1.984310  
+3              1.282029              1.096897              2.122871  
+4              1.431215              1.715761              0.683611  
+(1146, 6)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (10) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (20, 20), &#39;learning_rate_init&#39;: 0.008, &#39;max_iter&#39;: 10}, que permiten obtener un Accuracy de 68.80% y un Kappa del 4.54
+Model: &#34;model_113&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_113 (InputLayer)       (None, 6)                 0         
+_________________________________________________________________
+dense_343 (Dense)            (None, 20)                140       
+_________________________________________________________________
+dense_344 (Dense)            (None, 20)                420       
+_________________________________________________________________
+dense_345 (Dense)            (None, 1)                 21        
+=================================================================
+Total params: 581
+Trainable params: 581
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 10
+287/287 [==============================] - 0s 30us/step
+test loss: 0.6213179724972423, test accuracy: 0.6585366129875183
+AUC ROC:  0.5731198625935467
+Kappa:  0.03671484348243037
+[[173  36]
+ [ 62  16]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   tonalcentroidfiles_1  tonalcentroidfiles_2  tonalcentroidfiles_3  \
+0              1.585484              0.923309             -0.748807   
+1              1.129768              0.963814              0.209096   
+2             -0.066076              1.857866              1.921193   
+3              0.119831              1.429286              1.472808   
+4             -0.123292              0.197415              0.503797   
+
+   tonalcentroidfiles_4  tonalcentroidfiles_5  tonalcentroidfiles_6  
+0              1.209820             -1.073924              0.283035  
+1             -0.143471              0.115184              0.020905  
+2              1.093619              2.089353              1.984310  
+3              1.282029              1.096897              2.122871  
+4              1.431215              1.715761              0.683611  
+(1221, 6)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (100) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (10,), &#39;learning_rate_init&#39;: 0.001, &#39;max_iter&#39;: 100}, que permiten obtener un Accuracy de 67.98% y un Kappa del 3.10
+Model: &#34;model_114&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_114 (InputLayer)       (None, 6)                 0         
+_________________________________________________________________
+dense_346 (Dense)            (None, 10)                70        
+_________________________________________________________________
+dense_347 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 81
+Trainable params: 81
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 100
+306/306 [==============================] - 0s 46us/step
+test loss: 0.6286440378700207, test accuracy: 0.6764705777168274
+AUC ROC:  0.5523837407895379
+Kappa:  0.0
+[[207   0]
+ [ 99   0]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   tonalcentroidfiles_1  tonalcentroidfiles_2  tonalcentroidfiles_3  \
+0              1.585484              0.923309             -0.748807   
+1              1.129768              0.963814              0.209096   
+2             -0.066076              1.857866              1.921193   
+3              0.119831              1.429286              1.472808   
+4             -0.123292              0.197415              0.503797   
+
+   tonalcentroidfiles_4  tonalcentroidfiles_5  tonalcentroidfiles_6  
+0              1.209820             -1.073924              0.283035  
+1             -0.143471              0.115184              0.020905  
+2              1.093619              2.089353              1.984310  
+3              1.282029              1.096897              2.122871  
+4              1.431215              1.715761              0.683611  
+(1149, 6)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (20,), &#39;learning_rate_init&#39;: 0.005, &#39;max_iter&#39;: 400}, que permiten obtener un Accuracy de 66.67% y un Kappa del 13.94
+Model: &#34;model_115&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_115 (InputLayer)       (None, 6)                 0         
+_________________________________________________________________
+dense_348 (Dense)            (None, 20)                140       
+_________________________________________________________________
+dense_349 (Dense)            (None, 1)                 21        
+=================================================================
+Total params: 161
+Trainable params: 161
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 400
+288/288 [==============================] - 0s 41us/step
+test loss: 0.6312494774659475, test accuracy: 0.6631944179534912
+AUC ROC:  0.6036702127659574
+Kappa:  0.07250996015936262
+[[182   6]
+ [ 91   9]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Gramma y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   tonalcentroidfiles_1  tonalcentroidfiles_2  tonalcentroidfiles_3  \
+0              1.585484              0.923309             -0.748807   
+1              1.129768              0.963814              0.209096   
+2             -0.066076              1.857866              1.921193   
+3              0.119831              1.429286              1.472808   
+4             -0.123292              0.197415              0.503797   
+
+   tonalcentroidfiles_4  tonalcentroidfiles_5  tonalcentroidfiles_6  
+0              1.209820             -1.073924              0.283035  
+1             -0.143471              0.115184              0.020905  
+2              1.093619              2.089353              1.984310  
+3              1.282029              1.096897              2.122871  
+4              1.431215              1.715761              0.683611  
+(1110, 6)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (50) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (20,), &#39;learning_rate_init&#39;: 0.008, &#39;max_iter&#39;: 50}, que permiten obtener un Accuracy de 66.23% y un Kappa del 7.40
+Model: &#34;model_116&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_116 (InputLayer)       (None, 6)                 0         
+_________________________________________________________________
+dense_350 (Dense)            (None, 20)                140       
+_________________________________________________________________
+dense_351 (Dense)            (None, 1)                 21        
+=================================================================
+Total params: 161
+Trainable params: 161
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 50
+278/278 [==============================] - 0s 43us/step
+test loss: 0.6296036659384803, test accuracy: 0.633093535900116
+AUC ROC:  0.5993293246993524
+Kappa:  -0.008679567444507708
+[[169  15]
+ [ 87   7]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   tonalcentroidfiles_1  tonalcentroidfiles_2  tonalcentroidfiles_3  \
+0              0.898091              0.151819             -1.172713   
+1              0.618513             -0.762588              0.061946   
+2              0.685649              0.002933              0.719805   
+3              1.175209             -0.552349              0.336427   
+4              1.350337             -1.407757              0.258917   
+
+   tonalcentroidfiles_4  tonalcentroidfiles_5  tonalcentroidfiles_6  
+0              0.474387             -0.020230              1.228657  
+1              0.944076              0.697880              0.021150  
+2             -1.251700             -0.952424              1.444556  
+3              0.482978             -0.212146             -0.144225  
+4             -0.523670              0.099306              1.706064  
+(1050, 6)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (10,), &#39;learning_rate_init&#39;: 0.006, &#39;max_iter&#39;: 400}, que permiten obtener un Accuracy de 65.31% y un Kappa del 4.74
+Model: &#34;model_117&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_117 (InputLayer)       (None, 6)                 0         
+_________________________________________________________________
+dense_352 (Dense)            (None, 10)                70        
+_________________________________________________________________
+dense_353 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 81
+Trainable params: 81
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 400
+263/263 [==============================] - 0s 34us/step
+test loss: 0.6532349291863097, test accuracy: 0.6197718381881714
+AUC ROC:  0.5350877192982456
+Kappa:  -0.026621906472011903
+[[158  13]
+ [ 87   5]]
 </pre>
 </div>
 </div>
@@ -23832,6 +24982,708 @@ AUC ROC:  0.5637641047477113
 Kappa:  0.0158771473191045
 [[122   0]
  [ 76   1]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5-comp-groups-combinations">5-comp groups combinations<a class="anchor-link" href="#5-comp-groups-combinations">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Latex</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">three_combs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">companies</span><span class="p">)),</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="n">three_combs</span><span class="p">:</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;## &#39;</span>
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">title</span><span class="o">+=</span><span class="n">companies</span><span class="p">[</span><span class="n">no</span><span class="p">]</span>
+        <span class="n">title</span><span class="o">+=</span><span class="s1">&#39; y &#39;</span>
+    <span class="n">title</span><span class="o">+=</span><span class="n">companies</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">df_n_ps_std_ch</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">df_n_ps</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;chosen&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">X</span><span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_n_ps_std_ch</span><span class="p">[</span><span class="n">no</span><span class="p">])</span>
+        <span class="n">y</span><span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_n_ps</span><span class="p">[</span><span class="n">no</span><span class="p">][</span><span class="s1">&#39;chosen&#39;</span><span class="p">])</span>
+    
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">mlp</span> <span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+
+    <span class="n">activation_vec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="s1">&#39;tanh&#39;</span><span class="p">]</span>
+    <span class="n">max_iter_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]</span>
+    <span class="n">hidden_layer_sizes_vec</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">10</span><span class="p">,),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> 
+                              <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+    <span class="n">learning_rate_init_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.003</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">,</span> <span class="mf">0.006</span><span class="p">,</span> <span class="mf">0.007</span><span class="p">,</span> <span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.009</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">]</span>
+    <span class="n">batch_size_vec</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+    <span class="n">parametros</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="n">activation_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span><span class="n">max_iter_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">:</span> <span class="n">hidden_layer_sizes_vec</span><span class="p">,</span>
+                  <span class="s1">&#39;learning_rate_init&#39;</span><span class="p">:</span> <span class="n">learning_rate_init_vec</span><span class="c1">#,</span>
+                  <span class="c1">#&#39;batch_size&#39;: batch_size_vec</span>
+                  <span class="p">}</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa&#39;</span><span class="p">:</span><span class="n">make_scorer</span><span class="p">(</span><span class="n">cohen_kappa_score</span><span class="p">),</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span><span class="s1">&#39;accuracy&#39;</span><span class="p">}</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">parametros</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">iid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Los parámetros del mejor modelo fueron </span><span class="si">{0}</span><span class="s2">, que permiten obtener un Accuracy de </span><span class="si">{1:.2f}</span><span class="s2">% y un Kappa del </span><span class="si">{2:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_score_</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;mean_test_kappa&#39;</span><span class="p">][</span><span class="n">grid</span><span class="o">.</span><span class="n">best_index_</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+
+    <span class="n">n0</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">### hidden_layer_sizes</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">])):</span>
+        <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;hidden_layer_sizes&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;learning_rate_init&#39;</span><span class="p">]</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span>
+
+    <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">n0</span><span class="p">,))</span>
+    <span class="n">hidden_outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_tensor</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;logistic&#39;</span><span class="p">:</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">hidden_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">])(</span><span class="n">hidden_outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">classification_output</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">hidden_outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="n">input_tensor</span><span class="p">],</span> <span class="p">[</span><span class="n">classification_output</span><span class="p">])</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">adam</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">adam</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span>
+                        <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+             <span class="p">)</span>
+
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+    <span class="n">val_acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">]</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+    <span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span>
+
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;epochs: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">)))</span>
+
+    <span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test loss: </span><span class="si">{}</span><span class="s2">, test accuracy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span><span class="p">))</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;AUC ROC: &quot;</span><span class="p">,</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">y_pred</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kappa: &quot;</span><span class="p">,</span><span class="n">cohen_kappa_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Specialized<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   chromagramfiles_1  chromagramfiles_2  chromagramfiles_3  chromagramfiles_4  \
+0           1.713160           0.038243           2.143431           0.466379   
+1           1.315247           0.387677           1.394548          -0.542923   
+2           1.737505          -1.440944          -1.114255           0.326790   
+3           1.737506          -1.127088          -0.672464           0.505231   
+4           1.737506           1.455410           0.333584           1.122628   
+
+   chromagramfiles_5  chromagramfiles_6  chromagramfiles_7  chromagramfiles_8  \
+0           2.480688           1.533552          -0.564788          -0.236267   
+1          -0.194326           0.100084           0.191568           1.691930   
+2          -1.157732          -1.261521          -1.130503           1.585017   
+3          -0.830959          -1.046716          -0.912922           1.082754   
+4           1.139134          -0.481280           0.129896           0.915597   
+
+   chromagramfiles_9  chromagramfiles_10  chromagramfiles_11  \
+0          -0.737672            0.470152           -0.935468   
+1          -0.164059            0.599296           -0.175780   
+2          -1.367743           -1.287569           -0.805298   
+3          -0.919242           -0.761758           -1.023346   
+4           0.333032           -0.289806           -0.236639   
+
+   chromagramfiles_12  
+0            0.074931  
+1            0.267042  
+2           -1.676436  
+3           -1.220716  
+4           -0.281891  
+(1149, 12)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (20) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (10, 10, 10), &#39;learning_rate_init&#39;: 0.007, &#39;max_iter&#39;: 20}, que permiten obtener un Accuracy de 67.48% y un Kappa del 6.59
+Model: &#34;model_106&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_106 (InputLayer)       (None, 12)                0         
+_________________________________________________________________
+dense_320 (Dense)            (None, 10)                130       
+_________________________________________________________________
+dense_321 (Dense)            (None, 10)                110       
+_________________________________________________________________
+dense_322 (Dense)            (None, 10)                110       
+_________________________________________________________________
+dense_323 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 361
+Trainable params: 361
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 20
+288/288 [==============================] - 0s 21us/step
+test loss: 0.7196702228652107, test accuracy: 0.5798611044883728
+AUC ROC:  0.4887234042553191
+Kappa:  -0.05805197959679376
+[[154  34]
+ [ 87  13]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   chromagramfiles_1  chromagramfiles_2  chromagramfiles_3  chromagramfiles_4  \
+0           1.713160           0.038243           2.143431           0.466379   
+1           1.315247           0.387677           1.394548          -0.542923   
+2           1.737505          -1.440944          -1.114255           0.326790   
+3           1.737506          -1.127088          -0.672464           0.505231   
+4           1.737506           1.455410           0.333584           1.122628   
+
+   chromagramfiles_5  chromagramfiles_6  chromagramfiles_7  chromagramfiles_8  \
+0           2.480688           1.533552          -0.564788          -0.236267   
+1          -0.194326           0.100084           0.191568           1.691930   
+2          -1.157732          -1.261521          -1.130503           1.585017   
+3          -0.830959          -1.046716          -0.912922           1.082754   
+4           1.139134          -0.481280           0.129896           0.915597   
+
+   chromagramfiles_9  chromagramfiles_10  chromagramfiles_11  \
+0          -0.737672            0.470152           -0.935468   
+1          -0.164059            0.599296           -0.175780   
+2          -1.367743           -1.287569           -0.805298   
+3          -0.919242           -0.761758           -1.023346   
+4           0.333032           -0.289806           -0.236639   
+
+   chromagramfiles_12  
+0            0.074931  
+1            0.267042  
+2           -1.676436  
+3           -1.220716  
+4           -0.281891  
+(1146, 12)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (300) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (10,), &#39;learning_rate_init&#39;: 0.002, &#39;max_iter&#39;: 300}, que permiten obtener un Accuracy de 68.68% y un Kappa del 13.41
+Model: &#34;model_107&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_107 (InputLayer)       (None, 12)                0         
+_________________________________________________________________
+dense_324 (Dense)            (None, 10)                130       
+_________________________________________________________________
+dense_325 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 141
+Trainable params: 141
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 300
+287/287 [==============================] - 0s 108us/step
+test loss: 0.6104007429777537, test accuracy: 0.7108014225959778
+AUC ROC:  0.4922705314009662
+Kappa:  -0.02056467160790021
+[[204   3]
+ [ 80   0]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Gramma y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Gramma-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   chromagramfiles_1  chromagramfiles_2  chromagramfiles_3  chromagramfiles_4  \
+0           1.713160           0.038243           2.143431           0.466379   
+1           1.315247           0.387677           1.394548          -0.542923   
+2           1.737505          -1.440944          -1.114255           0.326790   
+3           1.737506          -1.127088          -0.672464           0.505231   
+4           1.737506           1.455410           0.333584           1.122628   
+
+   chromagramfiles_5  chromagramfiles_6  chromagramfiles_7  chromagramfiles_8  \
+0           2.480688           1.533552          -0.564788          -0.236267   
+1          -0.194326           0.100084           0.191568           1.691930   
+2          -1.157732          -1.261521          -1.130503           1.585017   
+3          -0.830959          -1.046716          -0.912922           1.082754   
+4           1.139134          -0.481280           0.129896           0.915597   
+
+   chromagramfiles_9  chromagramfiles_10  chromagramfiles_11  \
+0          -0.737672            0.470152           -0.935468   
+1          -0.164059            0.599296           -0.175780   
+2          -1.367743           -1.287569           -0.805298   
+3          -0.919242           -0.761758           -1.023346   
+4           0.333032           -0.289806           -0.236639   
+
+   chromagramfiles_12  
+0            0.074931  
+1            0.267042  
+2           -1.676436  
+3           -1.220716  
+4           -0.281891  
+(1221, 12)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (10) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (20, 20, 20), &#39;learning_rate_init&#39;: 0.004, &#39;max_iter&#39;: 10}, que permiten obtener un Accuracy de 66.78% y un Kappa del 1.70
+Model: &#34;model_108&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_108 (InputLayer)       (None, 12)                0         
+_________________________________________________________________
+dense_326 (Dense)            (None, 20)                260       
+_________________________________________________________________
+dense_327 (Dense)            (None, 20)                420       
+_________________________________________________________________
+dense_328 (Dense)            (None, 20)                420       
+_________________________________________________________________
+dense_329 (Dense)            (None, 1)                 21        
+=================================================================
+Total params: 1,121
+Trainable params: 1,121
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 10
+306/306 [==============================] - 0s 20us/step
+test loss: 0.621280312538147, test accuracy: 0.6633986830711365
+AUC ROC:  0.5602397399431126
+Kappa:  -0.02617698769290877
+[[198  16]
+ [ 87   5]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Club De Banqueros y Empresarios y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Club-De-Banqueros-y-Empresarios-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   chromagramfiles_1  chromagramfiles_2  chromagramfiles_3  chromagramfiles_4  \
+0           1.713160           0.038243           2.143431           0.466379   
+1           1.315247           0.387677           1.394548          -0.542923   
+2           1.737505          -1.440944          -1.114255           0.326790   
+3           1.737506          -1.127088          -0.672464           0.505231   
+4           1.737506           1.455410           0.333584           1.122628   
+
+   chromagramfiles_5  chromagramfiles_6  chromagramfiles_7  chromagramfiles_8  \
+0           2.480688           1.533552          -0.564788          -0.236267   
+1          -0.194326           0.100084           0.191568           1.691930   
+2          -1.157732          -1.261521          -1.130503           1.585017   
+3          -0.830959          -1.046716          -0.912922           1.082754   
+4           1.139134          -0.481280           0.129896           0.915597   
+
+   chromagramfiles_9  chromagramfiles_10  chromagramfiles_11  \
+0          -0.737672            0.470152           -0.935468   
+1          -0.164059            0.599296           -0.175780   
+2          -1.367743           -1.287569           -0.805298   
+3          -0.919242           -0.761758           -1.023346   
+4           0.333032           -0.289806           -0.236639   
+
+   chromagramfiles_12  
+0            0.074931  
+1            0.267042  
+2           -1.676436  
+3           -1.220716  
+4           -0.281891  
+(1149, 12)
+Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;tanh&#39;, &#39;hidden_layer_sizes&#39;: (20, 20), &#39;learning_rate_init&#39;: 0.007, &#39;max_iter&#39;: 1000}, que permiten obtener un Accuracy de 66.78% y un Kappa del 26.40
+Model: &#34;model_109&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_109 (InputLayer)       (None, 12)                0         
+_________________________________________________________________
+dense_330 (Dense)            (None, 20)                260       
+_________________________________________________________________
+dense_331 (Dense)            (None, 20)                420       
+_________________________________________________________________
+dense_332 (Dense)            (None, 1)                 21        
+=================================================================
+Total params: 701
+Trainable params: 701
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 1000
+288/288 [==============================] - 0s 298us/step
+test loss: 0.7321343157026503, test accuracy: 0.6354166865348816
+AUC ROC:  0.6264130135097877
+Kappa:  0.15915915915915912
+[[144  51]
+ [ 54  39]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Arte-Franc&#233;s-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Arte Franc&#233;s y Gramma y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Arte-Franc&#233;s-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   chromagramfiles_1  chromagramfiles_2  chromagramfiles_3  chromagramfiles_4  \
+0           1.713160           0.038243           2.143431           0.466379   
+1           1.315247           0.387677           1.394548          -0.542923   
+2           1.737505          -1.440944          -1.114255           0.326790   
+3           1.737506          -1.127088          -0.672464           0.505231   
+4           1.737506           1.455410           0.333584           1.122628   
+
+   chromagramfiles_5  chromagramfiles_6  chromagramfiles_7  chromagramfiles_8  \
+0           2.480688           1.533552          -0.564788          -0.236267   
+1          -0.194326           0.100084           0.191568           1.691930   
+2          -1.157732          -1.261521          -1.130503           1.585017   
+3          -0.830959          -1.046716          -0.912922           1.082754   
+4           1.139134          -0.481280           0.129896           0.915597   
+
+   chromagramfiles_9  chromagramfiles_10  chromagramfiles_11  \
+0          -0.737672            0.470152           -0.935468   
+1          -0.164059            0.599296           -0.175780   
+2          -1.367743           -1.287569           -0.805298   
+3          -0.919242           -0.761758           -1.023346   
+4           0.333032           -0.289806           -0.236639   
+
+   chromagramfiles_12  
+0            0.074931  
+1            0.267042  
+2           -1.676436  
+3           -1.220716  
+4           -0.281891  
+(1110, 12)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (100) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (10, 10, 10), &#39;learning_rate_init&#39;: 0.001, &#39;max_iter&#39;: 100}, que permiten obtener un Accuracy de 66.95% y un Kappa del 12.34
+Model: &#34;model_110&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_110 (InputLayer)       (None, 12)                0         
+_________________________________________________________________
+dense_333 (Dense)            (None, 10)                130       
+_________________________________________________________________
+dense_334 (Dense)            (None, 10)                110       
+_________________________________________________________________
+dense_335 (Dense)            (None, 10)                110       
+_________________________________________________________________
+dense_336 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 361
+Trainable params: 361
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 100
+278/278 [==============================] - 0s 36us/step
+test loss: 0.6524442815952164, test accuracy: 0.6546762585639954
+AUC ROC:  0.5173992673992673
+Kappa:  0.031218237258603065
+[[177   5]
+ [ 91   5]]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">Club De Banqueros y Empresarios y Gramma y Hotel Marrakech y Specialized y Urban Place<a class="anchor-link" href="#Club-De-Banqueros-y-Empresarios-y-Gramma-y-Hotel-Marrakech-y-Specialized-y-Urban-Place">&#182;</a></h2>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   chromagramfiles_1  chromagramfiles_2  chromagramfiles_3  chromagramfiles_4  \
+0          -0.369691          -0.881824          -0.095656          -0.923999   
+1          -0.175875          -0.403800          -0.657709          -0.201259   
+2           0.894452          -0.189794           1.959063           0.169276   
+3           0.060782          -0.392075           0.826233          -0.048480   
+4          -1.116536          -0.923742          -1.238971          -0.919598   
+
+   chromagramfiles_5  chromagramfiles_6  chromagramfiles_7  chromagramfiles_8  \
+0          -0.030645          -0.834931          -1.031650          -0.840942   
+1           1.691433          -0.672783          -0.119944          -0.440080   
+2          -0.403611          -1.036954           1.447615          -0.340767   
+3           1.789786          -0.552163           0.121028          -0.111355   
+4           0.313068          -1.160111           1.316032          -0.700013   
+
+   chromagramfiles_9  chromagramfiles_10  chromagramfiles_11  \
+0          -0.677716            1.084098           -1.064999   
+1           0.339906            1.084098            0.504608   
+2          -0.846170           -0.515065           -0.699878   
+3           0.220614            1.084098            0.073241   
+4          -1.600210            1.084098           -1.072155   
+
+   chromagramfiles_12  
+0           -1.156623  
+1            0.931676  
+2            0.032355  
+3            1.176257  
+4            1.270095  
+(1050, 12)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\ProgramData\Anaconda3\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:564: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (75) reached and the optimization hasn&#39;t converged yet.
+  % self.max_iter, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Los parámetros del mejor modelo fueron {&#39;activation&#39;: &#39;relu&#39;, &#39;hidden_layer_sizes&#39;: (10, 10), &#39;learning_rate_init&#39;: 0.003, &#39;max_iter&#39;: 75}, que permiten obtener un Accuracy de 66.71% y un Kappa del 5.60
+Model: &#34;model_111&#34;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_111 (InputLayer)       (None, 12)                0         
+_________________________________________________________________
+dense_337 (Dense)            (None, 10)                130       
+_________________________________________________________________
+dense_338 (Dense)            (None, 10)                110       
+_________________________________________________________________
+dense_339 (Dense)            (None, 1)                 11        
+=================================================================
+Total params: 251
+Trainable params: 251
+Non-trainable params: 0
+_________________________________________________________________
+None
+epochs: 75
+263/263 [==============================] - 0s 59us/step
+test loss: 0.6787851892496697, test accuracy: 0.6159695982933044
+AUC ROC:  0.5606389391199518
+Kappa:  0.06675332888311125
+[[152   6]
+ [ 95  10]]
 </pre>
 </div>
 </div>
